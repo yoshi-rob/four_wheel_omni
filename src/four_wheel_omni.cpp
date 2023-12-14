@@ -1,7 +1,6 @@
 #include <cmath>
 #include <geometry_msgs/Twist.h>
 #include <ros/ros.h>
-#include <std_msgs/Bool.h>
 #include <std_msgs/Float32MultiArray.h>
 
 class FourWheelOmni {
@@ -13,15 +12,12 @@ class FourWheelOmni {
     ros::Subscriber safe_signal_sub_;
     ros::Timer timer_;
     geometry_msgs::Twist last_twist_;
-    bool safe_signal = false;
 
   public:
     FourWheelOmni() : nh_(), pnh_("~") {
         wheel_pub_ = nh_.advertise<std_msgs::Float32MultiArray>("wheel_vel", 1);
         twist_sub_ =
             nh_.subscribe("cmd_vel", 1, &FourWheelOmni::twistCallback, this);
-        safe_signal_sub_ = nh_.subscribe(
-            "safe_signal", 1, &FourWheelOmni::safeSignalCallback, this);
         timer_ = nh_.createTimer(ros::Duration(0.1),
                                  &FourWheelOmni::timerCallback, this);
     }
@@ -30,40 +26,24 @@ class FourWheelOmni {
         last_twist_ = twist_msg;
     }
 
-    void safeSignalCallback(const std_msgs::Bool &safe_signal_msg) {
-        safe_signal = safe_signal_msg.data;
-    }
-
     void timerCallback(const ros::TimerEvent &e) {
         std_msgs::Float32MultiArray wheel_vel;
         wheel_vel.data.resize(4);
-        if (safe_signal == false) {
-            ROS_DEBUG("safe_signal is false");
-            wheel_vel.data[0] = 0;
-            wheel_vel.data[1] = 0;
-            wheel_vel.data[2] = 0;
-            wheel_vel.data[3] = 0;
-        } else {
-            float vx = last_twist_.linear.x;
-            float vy = last_twist_.linear.y;
-            float vz = last_twist_.angular.z;
+        float vx = last_twist_.linear.x;
+        float vy = last_twist_.linear.y;
+        float vz = last_twist_.angular.z;
 
-            // オムニホイールの角度
-            float theta1 = M_PI / 4.0;
-            float theta2 = 3.0 * M_PI / 4.0;
-            float theta3 = 5.0 * M_PI / 4.0;
-            float theta4 = 7.0 * M_PI / 4.0;
+        // オムニホイールの角度
+        float theta1 = M_PI / 4.0;
+        float theta2 = 3.0 * M_PI / 4.0;
+        float theta3 = 5.0 * M_PI / 4.0;
+        float theta4 = 7.0 * M_PI / 4.0;
 
-            // オムニホイールの速度計算
-            wheel_vel.data[0] =
-                vx * cos(theta1) + vy * sin(theta1) + vz; // 右前輪
-            wheel_vel.data[1] =
-                vx * cos(theta2) + vy * sin(theta2) + vz; // 左前輪
-            wheel_vel.data[2] =
-                vx * cos(theta3) + vy * sin(theta3) + vz; // 左後輪
-            wheel_vel.data[3] =
-                vx * cos(theta4) + vy * sin(theta4) + vz; // 右後輪
-        }
+        // オムニホイールの速度計算
+        wheel_vel.data[0] = vx * cos(theta1) + vy * sin(theta1) + vz; // 右前輪
+        wheel_vel.data[1] = vx * cos(theta2) + vy * sin(theta2) + vz; // 左前輪
+        wheel_vel.data[2] = vx * cos(theta3) + vy * sin(theta3) + vz; // 左後輪
+        wheel_vel.data[3] = vx * cos(theta4) + vy * sin(theta4) + vz; // 右後輪
 
         wheel_pub_.publish(wheel_vel);
     }
