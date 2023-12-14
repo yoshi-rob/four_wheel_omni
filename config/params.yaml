@@ -1,0 +1,22 @@
+joy: {
+  safe_button: 5,
+  assign_x: 1,
+  assign_y: 3,
+  assign_z: 0,
+  assign_x_straight: 7,
+  assign_y_straight: 6,
+
+  max_x: 5.0,
+  max_y: 5.0,
+  max_z: 3.0,
+  max_x_straight: -0.1,
+  max_straight: -0.1,
+}
+
+Arduino: {
+  wheel: {
+    Kp: [1.0, 1.0, 1.0, 1.0],
+    Ki: [0.0, 0.0, 0.0, 0.0],
+    Kd: [0.0, 0.0, 0.0, 0.0]
+  },
+}
