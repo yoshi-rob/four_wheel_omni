@@ -12,6 +12,8 @@ class TwistPublisher {
     ros::Subscriber joy_sub_;
     ros::Timer timer_;
     sensor_msgs::Joy last_joy_;
+    int assign_x, assign_y, assign_z, safe_button;
+    double max_x, max_y, max_z;
 
   public:
     TwistPublisher() : nh_(), pnh_("~") {
@@ -20,43 +22,33 @@ class TwistPublisher {
         joy_sub_ = nh_.subscribe("joy", 10, &TwistPublisher::joyCallback, this);
         timer_ = nh_.createTimer(ros::Duration(0.1),
                                  &TwistPublisher::timerCallback, this);
+        while (!pnh_.getParam("/joy/assign_x", assign_x)) {
+            ROS_INFO("Failed to get param: assign_x");
+        }
+        while (!pnh_.getParam("/joy/assign_y", assign_y)) {
+            ROS_INFO("Failed to get param: assign_y");
+        }
+        while (!pnh_.getParam("/joy/assign_z", assign_z)) {
+            ROS_INFO("Failed to get param: assign_z");
+        }
+        while (!pnh_.getParam("/joy/safe_button", safe_button)) {
+            ROS_INFO("Failed to get param: safe_button");
+        }
+        while (!pnh_.getParam("/joy/max_x", max_x)) {
+            ROS_INFO("Failed to get param: max_x");
+        }
+        while (!pnh_.getParam("/joy/max_y", max_y)) {
+            ROS_INFO("Failed to get param: max_y");
+        }
+        while (!pnh_.getParam("/joy/max_z", max_z)) {
+            ROS_INFO("Failed to get param: max_z");
+        }
     }
 
     void joyCallback(const sensor_msgs::Joy &joy_msg) { last_joy_ = joy_msg; }
 
     void timerCallback(const ros::TimerEvent &e) {
-        // ジョイコンの割り当て(launchファイルから設定)
-        int assign_x = 1;
-        int assign_y = 0;
-        int assign_z = 2;
-        int safe_button = 7;
-        pnh_.getParam("/joy/assign_x", assign_x);
-        pnh_.getParam("/joy/assign_y", assign_y);
-        pnh_.getParam("/joy/assign_z", assign_z);
-        pnh_.getParam("/joy/safe_button", safe_button);
-
-        int assign_x_straight = 7;
-        int assign_y_straight = 6;
-        pnh_.getParam("/joy/assign_x_straight", assign_x_straight);
-        pnh_.getParam("/joy/assign_y_straight", assign_y_straight);
-
-        // 最大速度の設定(launchファイルから設定)
-        float max_x = 1.0;
-        float max_y = 1.0;
-        float max_z = 1.0;
-        pnh_.getParam("/joy/max_x", max_x);
-        pnh_.getParam("/joy/max_y", max_y);
-        pnh_.getParam("/joy/max_z", max_z);
-
         geometry_msgs::Twist cmd_vel;
-        // if (0 <= assign_x_straight &&
-        //     assign_x_straight < last_joy_.axes.size()) {
-        //     cmd_vel.linear.x = max_x * last_joy_.axes[assign_x_straight];
-        // }
-        // if (0 <= assign_y_straight &&
-        //     assign_y_straight < last_joy_.axes.size()) {
-        //     cmd_vel.linear.y = max_y * last_joy_.axes[assign_y_straight];
-        // }
         if (0 <= assign_x && assign_x < last_joy_.axes.size()) {
             cmd_vel.linear.x = copysign(max_x, last_joy_.axes[assign_x]) *
                 pow(last_joy_.axes[assign_x], 2);
@@ -68,6 +60,7 @@ class TwistPublisher {
         if (0 <= assign_z && assign_z < last_joy_.axes.size()) {
             cmd_vel.angular.z = max_z * last_joy_.axes[assign_z];
         }
+
         cmd_pub_.publish(cmd_vel);
 
         /* 安全ボタンの処理 */
@@ -75,6 +68,7 @@ class TwistPublisher {
         if (0 <= safe_button && safe_button < last_joy_.buttons.size()) {
             safe_signal.data = last_joy_.buttons[safe_button];
         }
+
         safe_signal_pub_.publish(safe_signal);
     }
 };
