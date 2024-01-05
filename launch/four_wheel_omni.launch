@@ -22,7 +22,7 @@
 	</group>
 
 	<group if="$(arg odom)">
-		<node name="odometry" pkg="four_wheel_omni" type="Odometry" output="screen" required="true"/>
+		<node name="odometry" pkg="four_wheel_omni" type="odometry" output="screen" required="true"/>
 	</group>
 
 	<group if="$(arg arduino)">
