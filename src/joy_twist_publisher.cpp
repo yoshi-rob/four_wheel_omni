@@ -22,27 +22,13 @@ class TwistPublisher {
         joy_sub_ = nh_.subscribe("joy", 10, &TwistPublisher::joyCallback, this);
         timer_ = nh_.createTimer(ros::Duration(0.1),
                                  &TwistPublisher::timerCallback, this);
-        while (!pnh_.getParam("/joy/assign_x", assign_x)) {
-            ROS_INFO("Failed to get param: assign_x");
-        }
-        while (!pnh_.getParam("/joy/assign_y", assign_y)) {
-            ROS_INFO("Failed to get param: assign_y");
-        }
-        while (!pnh_.getParam("/joy/assign_z", assign_z)) {
-            ROS_INFO("Failed to get param: assign_z");
-        }
-        while (!pnh_.getParam("/joy/safe_button", safe_button)) {
-            ROS_INFO("Failed to get param: safe_button");
-        }
-        while (!pnh_.getParam("/joy/max_x", max_x)) {
-            ROS_INFO("Failed to get param: max_x");
-        }
-        while (!pnh_.getParam("/joy/max_y", max_y)) {
-            ROS_INFO("Failed to get param: max_y");
-        }
-        while (!pnh_.getParam("/joy/max_z", max_z)) {
-            ROS_INFO("Failed to get param: max_z");
-        }
+        pnh_.getParam("/joy/assign_x", assign_x);
+        pnh_.getParam("/joy/assign_y", assign_y);
+        pnh_.getParam("/joy/assign_z", assign_z);
+        pnh_.getParam("/joy/safe_button", safe_button);
+        pnh_.getParam("/joy/max_x", max_x);
+        pnh_.getParam("/joy/max_y", max_y);
+        pnh_.getParam("/joy/max_z", max_z);
     }
 
     void joyCallback(const sensor_msgs::Joy &joy_msg) { last_joy_ = joy_msg; }
