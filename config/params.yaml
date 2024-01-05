@@ -16,6 +16,11 @@ joy: {
   max_z: 3.0,
 }
 
+omniWheel: {
+  radius: 0.05,
+  wheelBase: 0.7,
+}
+
 Arduino: {
   wheel: {
     Kp: [1.0, 1.0, 1.0, 1.0],

@@ -37,7 +37,7 @@ void safe_signal_cb(const std_msgs::Bool &safe_signal_msg) {
 }
 
 std_msgs::Float32MultiArray vel_msg;
-ros::Publisher vel_pub("vel", &vel_msg);
+ros::Publisher vel_pub("current_vel", &vel_msg);
 ros::Subscriber<std_msgs::Float32MultiArray> wheel_vel_sub("wheel_vel",
                                                            wheel_vel_callback);
 ros::Subscriber<std_msgs::Bool> safe_signal_sub("safe_signal", safe_signal_cb);

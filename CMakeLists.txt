@@ -11,6 +11,8 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  tf2
+  tf2_ros
 )
 
 ## System dependencies are found with CMake's conventions
@@ -212,5 +214,10 @@ target_link_libraries(joy_twist_publisher
 
 add_executable(four_wheel_omni src/four_wheel_omni.cpp)
 target_link_libraries(four_wheel_omni
+  ${catkin_LIBRARIES}
+)
+
+add_executable(odometry src/odometry.cpp)
+target_link_libraries(odometry
   ${catkin_LIBRARIES}
 )

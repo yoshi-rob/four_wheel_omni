@@ -5,6 +5,7 @@
 	<arg name="joystick" default="true"/>
 	<arg name="joy_control" default="true"/>
 	<arg name="four_wheel_omni" default="true"/>
+	<arg name="odom" default="true"/>
 
 	<group if="$(arg joystick)">
 		<node name="joystick" pkg="joy" type="joy_node" required="true">
@@ -18,6 +19,10 @@
 
 	<group if="$(arg four_wheel_omni)">
 		<node name="four_wheel_omni" pkg="four_wheel_omni" type="four_wheel_omni" output="screen" required="true"/>
+	</group>
+
+	<group if="$(arg odom)">
+		<node name="odometry" pkg="four_wheel_omni" type="Odometry" output="screen" required="true"/>
 	</group>
 
 	<group if="$(arg arduino)">
