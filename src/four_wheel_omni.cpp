@@ -18,7 +18,7 @@ class FourWheelOmni {
         wheel_pub_ = nh_.advertise<std_msgs::Float32MultiArray>("wheel_vel", 1);
         twist_sub_ =
             nh_.subscribe("cmd_vel", 1, &FourWheelOmni::twistCallback, this);
-        timer_ = nh_.createTimer(ros::Duration(0.1),
+        timer_ = nh_.createTimer(ros::Duration(0.01),
                                  &FourWheelOmni::timerCallback, this);
     }
 
@@ -52,7 +52,7 @@ class FourWheelOmni {
 int main(int argc, char **argv) {
     ros::init(argc, argv, "four_wheel_omni");
     FourWheelOmni four_wheel_omni;
-    ros::Rate loop_rate(10);
+    ros::Rate loop_rate(100);
 
     while (ros::ok()) {
         ros::spinOnce();

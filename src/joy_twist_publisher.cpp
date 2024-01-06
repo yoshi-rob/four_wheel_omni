@@ -20,7 +20,7 @@ class TwistPublisher {
         cmd_pub_ = nh_.advertise<geometry_msgs::Twist>("cmd_vel", 1);
         safe_signal_pub_ = nh_.advertise<std_msgs::Bool>("safe_signal", 1);
         joy_sub_ = nh_.subscribe("joy", 10, &TwistPublisher::joyCallback, this);
-        timer_ = nh_.createTimer(ros::Duration(0.1),
+        timer_ = nh_.createTimer(ros::Duration(0.01),
                                  &TwistPublisher::timerCallback, this);
         pnh_.getParam("/joy/assign_x", assign_x);
         pnh_.getParam("/joy/assign_y", assign_y);
@@ -69,7 +69,7 @@ int main(int argc, char **argv) {
     ros::init(argc, argv, "joy_twist_publisher");
     TwistPublisher twist_publisher;
 
-    ros::Rate rate(10);
+    ros::Rate rate(100);
     while (ros::ok()) {
         ros::spinOnce();
         rate.sleep();
