@@ -16,7 +16,7 @@ const uint16_t INC_CPR = 1024 * 4;
 const double P = 0.8;
 const double capableDuty = 0.5;
 float velocity_target[] = {0, 0, 0, 0};
-float Kp[] = {1.0, 1.0, 1.0, 1.0};
+float Kp[] = {0.0, 0.0, 0.0, 0.0};
 float Ki[] = {0.0, 0.0, 0.0, 0.0};
 float Kd[] = {0.0, 0.0, 0.0, 0.0};
 bool stopFlag = true;
@@ -87,14 +87,12 @@ void loop() {
             DC_motor::put(motorNum[i], 0);
             vel_msg.data[i] = velocityPID[i].getCurrent();
         }
-        nh.loginfo("Stopping");
     } else {
         for (int i = 0; i < 4; i++) {
             velocityPID[i].setTarget(velocity_target[i]);
             velocityPID[i].compute();
             vel_msg.data[i] = velocityPID[i].getCurrent();
         }
-        nh.loginfo("Moving");
     }
     vel_pub.publish(&vel_msg);
     Cubic::update();
