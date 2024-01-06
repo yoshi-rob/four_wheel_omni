@@ -53,6 +53,12 @@ class TwistPublisher {
         std_msgs::Bool safe_signal;
         if (0 <= safe_button && safe_button < last_joy_.buttons.size()) {
             safe_signal.data = last_joy_.buttons[safe_button];
+
+            if (last_joy_.buttons[safe_button]) {
+                ROS_INFO("Moving");
+            } else {
+                ROS_INFO("Stopping");
+            }
         }
 
         safe_signal_pub_.publish(safe_signal);
